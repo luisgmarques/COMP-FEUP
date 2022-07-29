@@ -1,0 +1,75 @@
+import static io.println(int);
+class OptimizationR {
+	public static void main(String[] args) {
+		/*int a;                   //0
+		int b;                   //1
+		int i;                   //2
+		b = 3;                   //3
+		a = b;                   //4
+		if (a < b) {             //5
+		    i = 2;               //6
+		    i = 2;               //7
+		} else if (a < b) {      //8
+		    a = 3;               //9
+		    b = 3;               //10
+		} else if (a < b) {      //11
+		    a = 2;               //12
+		    b = 2;               //13
+		} else if (a < b) {      //14
+		    a = 3;               //15
+		    b = 4;               //16
+		} else {
+		    a = 2;               //17
+		    a = 3;               //18
+		}
+		a = 2;                   //19
+		a = 5;                   //20*/
+	}
+
+	/*public int test() {
+	    int a;
+	    int c;
+	    c = 3;
+	    while(c < 5) {
+	        a = c;
+	        continue;
+	        c = c + 1;
+	        break;
+	    }
+	    return 2;
+	}*/
+
+	/*public int la(int a, int b, int c, int x) {
+	    int t1; //5
+	    int t2; //6
+	    int t3; //7
+	    int t4; //8
+	    int t5; //9
+	    int y;  //10
+	    t1=x*x;
+        t2=a*t1;
+        t3=b*x;
+        t4=t3+c;
+        t5=t4+t2;
+        y=t5;
+        return y;
+	}*/
+
+	public int profTest() {
+	    int a;
+	    int b;
+	    int c;
+	    int d;
+	    a = 0;
+	    b = a;
+	    c = b;
+	    d = c;
+	    return d;
+	}
+
+	/*public int manyArgs(int a, int ab, int ac, int ai, int ar, int at, int aa, int ap, int ao) {
+        int q;
+	    q= a + ab + ac + ai + ar + at+aa+ap+ao;
+	    return q;
+	}*/
+}

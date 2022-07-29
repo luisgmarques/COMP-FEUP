@@ -1,0 +1,31 @@
+class Object {
+    public static void main(String[] args) {
+        Object obj;
+        Object res;
+        int[] a;
+        int b;
+        a = new int[2];
+
+
+        b = (obj.test()).length;
+
+        obj.add(obj.func()).add(2);
+
+        res = (obj.func()).add(1).add(2); // MUST FAIL
+        (a)[2];
+        (obj.test()).length;
+
+    }
+
+    public int test() {
+        return 2;
+    }
+
+    public Object add(int number) {
+        return this;
+    }
+
+    public int func() {
+        return 1;
+    }
+}

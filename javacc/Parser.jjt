@@ -1,0 +1,327 @@
+options
+{
+	LOOKAHEAD=1;
+}
+
+PARSER_BEGIN(Parser)
+
+public class Parser
+{
+}
+
+PARSER_END(Parser)
+
+SKIP :
+{
+	" " | "\r" | "\t" | "\n"
+	| < "//" (~[ "\n", "\r" ])*
+        ("\n" | "\r" | "\r\n") >
+    | < "/*" (~[ "*" ])* "*"
+        ( "*" |  ~[ "*", "/" ] (~[ "*" ])* "*")*
+        "/" >
+}
+
+/* Simple tokens */
+TOKEN : {
+	<IMPORT: "import"> 
+    | <CLASS: "class"> 
+    | <EXTENDS: "extends"> 
+    | <LEFT_BRACKET: "(">
+    | <RIGHT_BRACKET: ")">
+    | <LEFT_BRACE: "{">
+    | <RIGHT_BRACE: "}">
+    | <LEFT_RECT_BRACKET: "[">
+    | <RIGHT_RECT_BRACKET: "]">
+    | <COMMA: ",">
+    | <SEMI_COLON: ";">
+    | <QUOTE: "\"">
+    | <IF: "if">
+    | <ELSE: "else">
+    | <WHILE: "while">
+    | <ASSIGN: "=">
+	| <AND:  "&&" >
+	| <LESS_THAN: "<" >
+    | <ADDSUB_OP: "+" | "-">
+    | <MULDIV_OP: "*" | "/">
+    | <DOT: ".">
+    | <LENGTH: "length">
+    | <LOGICAL_VALUE: "true" | "false">
+    | <NEW: "new">
+    | <THIS: "this"> 
+    | <NOT: "!">
+    | <RETURN: "return"> 
+    | <PUBLIC: "public"> 
+    | <INT: "int"> 
+    | <BOOLEAN: "boolean">
+	| <MAIN: "main">
+	| <MAIN_STRING: "String">
+	| <STATIC : "static">
+	| <VOID : "void">
+	| <BREAK : "break">
+	| <CONTINUE : "continue">
+}
+
+/* Composed tokens */
+TOKEN : {
+    <IDENTIFIER: (<CHAR> | "_" | "$") (<CHAR> | <INTEGER> | "_")* >
+    | <STRING: <QUOTE> (<CHAR>)* <QUOTE> >
+    | <CHAR: ["a"-"z","A"-"Z"] >
+    | <INTEGER: (["0"-"9"])+ >
+    | <ARRAY_TYPE: <INT> <LEFT_RECT_BRACKET> <RIGHT_RECT_BRACKET> >
+}
+
+JAVACODE
+void error_skipto(int kind) {
+	ParseException e = generateParseException();  // generate the exception object.
+
+	System.out.println("Erro >> " + e.toString());  // print the error message
+	Token t;
+	do {
+	  t = getNextToken();
+	} while (t.kind != kind && t.kind != EOF);
+}
+
+SimpleNode Main() #Start: {}
+{
+	
+	(ImportDeclaration())* ClassDeclaration() <EOF>
+   
+    {return jjtThis; } // Java code inside brackets
+}
+
+void ImportDeclaration() #Import: {Token t; Token s; }
+{
+	{ Import imp = new Import(); }
+	<IMPORT> [<STATIC> {imp.setStatic();}] t=<IDENTIFIER> {imp.setClassName(t.image);}
+	    [  <LEFT_BRACKET> [s=Type() {imp.addArgsToConstructor(s.image);} (<COMMA> s=Type() {imp.addArgsToConstructor(s.image);})* ] <RIGHT_BRACKET>  |
+	      <DOT> t=<IDENTIFIER> {imp.addMethod(t.image);}
+	        <LEFT_BRACKET> [s=Type() {imp.addArgsToMethod(s.image);}
+	            (<COMMA> s=Type() {imp.addArgsToMethod(s.image);} )* ]
+	                <RIGHT_BRACKET> [s=Type() {imp.setReturnType(s.image);}] ] <SEMI_COLON>
+	{ jjtThis.img = imp; }
+}
+
+void ClassDeclaration() #Class: {Token name = new Token(); Token extendsClass = new Token();}
+{
+	<CLASS> name=<IDENTIFIER> {Image cd = new ClassDeclaration(name.image);}
+		[<EXTENDS> extendsClass=<IDENTIFIER> {cd = new ClassDeclaration(name.image, extendsClass.image);}] <LEFT_BRACE> { jjtThis.img = cd; }
+            (VarDeclaration())* (<PUBLIC> (MethodDeclaration() | MainDeclaration()))* <RIGHT_BRACE>
+}
+
+void VarDeclaration() #VarDeclaration: {Token t; Token s;} {
+	s=Type()  t=<IDENTIFIER> <SEMI_COLON>
+	
+	{VarDeclaration vd = new VarDeclaration(s.image, t.image); jjtThis.token = s; jjtThis.img = vd;}
+}
+
+Token Type() #void: {Token t = new Token();}
+{
+       ( t=<INT>
+    |	t=<BOOLEAN>
+    |	t=<ARRAY_TYPE>
+    |	t=<IDENTIFIER>
+    |   t=<VOID>
+    |   t=<MAIN_STRING>)
+
+	{return t;}
+}
+
+void MethodDeclaration() #Method: {Token t; Token type; Token argType = new Token(); Token argName;}
+{
+	type=Type()
+
+		t=<IDENTIFIER> {MethodDeclaration md = new MethodDeclaration(t.image, type.image);}
+
+		<LEFT_BRACKET> 
+		
+		[
+		    argType=Type() argName=<IDENTIFIER> {md.addArg(new Arg(argType.image, argName.image));}
+		    (<COMMA> argType=Type() argName=<IDENTIFIER> {md.addArg(new Arg(argType.image, argName.image));})*
+		]
+		
+		<RIGHT_BRACKET> <LEFT_BRACE>
+
+
+	{ jjtThis.img = md; jjtThis.token = argType;}
+
+		(LOOKAHEAD(2) VarDeclaration())* 
+		(Statement())*
+
+	<RETURN>
+	Expression() #Return <SEMI_COLON> <RIGHT_BRACE>
+
+}
+
+void MainDeclaration() #Main: {Token t;}
+{
+	<STATIC> <VOID> t=<MAIN> <LEFT_BRACKET> <MAIN_STRING> <LEFT_RECT_BRACKET> <RIGHT_RECT_BRACKET> <IDENTIFIER> <RIGHT_BRACKET> <LEFT_BRACE> {jjtThis.token = t;}
+    (LOOKAHEAD(2) VarDeclaration())*
+    (Statement())*
+	<RIGHT_BRACE>
+}
+
+void Statement() #void:{}
+{
+	<LEFT_BRACE> (Statement())* <RIGHT_BRACE>
+	| IfStatement() 
+	| ElseStatement()
+	| WhileStatement() 
+	| (LOOKAHEAD(2) Assign()
+	| Expression() <SEMI_COLON>)
+}
+
+void Assign() #Assign : {Token t;}
+{
+  AssignAux() t=<ASSIGN> Expression() <SEMI_COLON> {jjtThis.token = t;}
+}
+
+void AssignAux() #Identifier: {Token t;}
+{
+  t=<IDENTIFIER> {Identifier id = new Identifier(t.image); jjtThis.token = t; jjtThis.img = id;} [ ArrayIndex() ]
+}
+
+void ArrayIndex() #ArrayIndex: {} {
+	<LEFT_RECT_BRACKET> Expression() <RIGHT_RECT_BRACKET>
+}
+
+void IfStatement() #If: {}
+{
+	<IF> Expression()
+		Statement()
+}
+
+void ElseStatement() #Else: {}
+{
+	<ELSE> Statement()
+}
+
+void WhileStatement() #While:{}
+{
+    try {
+            <WHILE> <LEFT_BRACKET> Expression() <RIGHT_BRACKET>
+        }
+        catch(ParseException e) {
+            error_skipto(RIGHT_BRACKET);
+            if (++Main.noErrors >= 10)
+                throw new ParseException();
+    	}
+
+    	Statement()
+}
+
+void Expression() #void: {}
+{
+  AndExpression()
+}
+
+void AndExpression() #void: {}
+{
+  LessThanExpression() (LOOKAHEAD(2) <AND> LessThanExpression() #And(2))*
+}
+
+void LessThanExpression() #void: {Token t;}
+{
+  AddSubExpression() (LOOKAHEAD(2) t=<LESS_THAN> AddSubExpression() {jjtThis.token = t;} #LessThan(2))*
+}
+
+void AddSubExpression() #void: {Token t;}
+{
+  MultDivExpression() (LOOKAHEAD(2) t=<ADDSUB_OP> MultDivExpression() {Image addSub = new AddSub(t.image); jjtThis.token = t; jjtThis.img = addSub;} #AddSub(2))*
+}
+
+void MultDivExpression() #void: {Token t;}
+{
+  FinalExpression() (LOOKAHEAD(2) t=<MULDIV_OP> FinalExpression() {Image mulDiv = new MulDiv(t.image); jjtThis.token = t; jjtThis.img = mulDiv;} #MultDiv(2))*
+}
+
+void FinalExpression() #void: {Token t;}
+{
+    Break()
+    |
+    Continue()
+    |
+    IntegerLiteral()
+    |
+    Boolean()
+    |
+    Identifier() 
+    |
+    t=<THIS> FinalExpressionNR() #This
+    |   
+    <NEW> NewExpression() #New
+    |
+    t=<NOT> FinalExpression() #Not FinalExpressionNR()
+    |/*
+	  LOOKAHEAD(<LEFT_BRACKET> Expression() <RIGHT_BRACKET> <DOT> | <LEFT_BRACKET> Expression() <RIGHT_BRACKET>)
+    (<LEFT_BRACKET> Expression() <RIGHT_BRACKET> FinalExpressionNR())
+    |*/
+    <LEFT_BRACKET> Parenthesis()
+}
+
+void Break() #Break: {Token t;} {
+	t = <BREAK> FinalExpressionNR() {jjtThis.token = t;}
+}
+
+void Continue() #Continue: {Token t;} {
+	t = <CONTINUE> FinalExpressionNR() {jjtThis.token = t;}
+}
+
+void Parenthesis() #Parenthesis: {}
+{
+    Expression() <RIGHT_BRACKET> FinalExpressionNR()
+}
+
+void IntegerLiteral() #Integer: {Token t;} {
+	t = <INTEGER> FinalExpressionNR() {Image integer = new IntegerLiteral(t.image); jjtThis.token = t; jjtThis.img = integer; }
+}
+
+void Boolean() #Boolean: {Token t;} {
+	t=<LOGICAL_VALUE> FinalExpressionNR() {Image bool = new Boolean(t.image); jjtThis.token = t; jjtThis.img = bool;}
+}
+
+void Identifier() #Identifier: {Token t;} {
+	t = <IDENTIFIER>  FinalExpressionNR() {Identifier id = new Identifier(t.image); jjtThis.token = t; jjtThis.img = id;}
+} 
+
+void FinalExpressionNR() #void: {Token t;}
+{
+    <LEFT_RECT_BRACKET> Expression() #ArrayIndex <RIGHT_RECT_BRACKET>   
+    |
+    <DOT> MethodOrLength()
+    |
+    {} // ε
+}
+
+void NewExpression() #void: {Token t;}
+{
+	IntArray()
+	|
+	ObjCreation()
+}
+
+void IntArray() #IntArray: {} {
+	<INT> <LEFT_RECT_BRACKET> Expression() <RIGHT_RECT_BRACKET> FinalExpressionNR()
+}
+
+void ObjCreation() #ObjCreation: {Token t;} {
+	t=<IDENTIFIER> <LEFT_BRACKET> <RIGHT_BRACKET> FinalExpressionNR() 
+	{ Image objC = new ObjCreation(t.image); jjtThis.img = objC; }
+}
+
+void MethodOrLength() #void: {}
+{
+	<LENGTH> #Length
+	|
+	CallMethod()
+}
+
+void CallMethod() #CallMethod: {Token t;}
+{
+	t=<IDENTIFIER>  <LEFT_BRACKET> (Args())* <RIGHT_BRACKET> #EndMethod {CallMethod cm = new CallMethod(t.image); jjtThis.token = t; jjtThis.img = cm;}
+	FinalExpressionNR()
+}
+
+void Args() #void: {}
+{
+    Expression() (<COMMA> Expression())*
+}

@@ -1,0 +1,35 @@
+import static BoardBase.sameArray(int[]) boolean;
+import static BoardBase.sameArray(int[]) boolean;
+import static BoardBase.printBoard(int[],int[],int[]) void;
+import static BoardBase.printWinner(int) void;
+
+import BoardBase();
+import BoardBase.playerTurn(int) int[];
+import static BoardBase.wrongMove() void;
+import static BoardBase.placeTaken() void;
+
+class TicTacToe {
+  int a;
+
+  public static void main(String[] args) {
+    boolean b;
+    a = 1;
+    new TicTacToe().test();
+  }
+
+  public int ret(){
+    return 1;
+  }
+
+  public boolean test() {
+    boolean a;
+    int c;
+    int[] arr;
+    TicTacToe t;
+    arr = new int[1];
+    c = arr[this.ret()];
+    //this.a = arr[0];
+    a = true;
+    return a; // MUST WORK
+  }
+}

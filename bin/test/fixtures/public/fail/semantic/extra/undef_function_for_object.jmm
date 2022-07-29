@@ -1,0 +1,10 @@
+class Undef {
+    public static void main(String[] args) {
+        int a;
+        a.add(2);
+    }
+
+    public Undef add(int number) {
+        return this;
+    }
+}

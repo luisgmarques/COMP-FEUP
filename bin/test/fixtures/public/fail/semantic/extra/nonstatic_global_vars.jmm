@@ -1,0 +1,16 @@
+import static io.println(int);
+
+class NonStaticGlobalVars {
+    // these are non static variables:
+    int global;
+    int teste;
+
+    public static void main(String[] args) {
+        this.teste = 0; // both approaches should fail: static context => create new object NonStaticGlobalVars
+        global = 0;
+
+        teste = global + 5;
+
+        io.println(teste);
+    }
+}

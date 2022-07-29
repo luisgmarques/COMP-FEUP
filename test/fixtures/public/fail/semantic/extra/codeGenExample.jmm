@@ -1,0 +1,41 @@
+import Blah;
+import Blah.poop() int;
+import static Blah.bar() boolean;
+import Blah.party() int[];
+
+class Fac {
+
+    public int blah() { //VER RETURNS
+        return 1;
+    }
+
+    public boolean foo() {
+        return true;
+    }
+
+    public int ComputeFac(int num) {
+        Blah blah;
+        int bleh;
+        boolean blih;
+        int bloh;
+        int bluh;
+        int[] end;
+        blah = new Blah();
+        bleh = blah.poop();
+
+        blih = !(!this.foo() && !Blah.bar()) && bleh < this.blah() + 5;
+
+        bloh = bleh + ((2*23)+(65/(87-5))) - this.blah() + 5;
+
+        bluh = (blah.party()).length;
+
+        end = new int[3];
+        end[bleh] = bluh;
+        end[bloh] = end[bleh] + end.length;
+        end[bluh] = end[bleh] + end[bloh];
+
+        bleh = end[bleh] + end[bloh] + end[bluh];
+
+        return bleh;
+    }
+}

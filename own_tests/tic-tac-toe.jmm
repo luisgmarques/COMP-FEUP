@@ -1,0 +1,174 @@
+import static io.println(int);
+import static io.print(int);
+import static io.read() int;
+
+class TTT {
+
+    int[] grid;
+    int player;
+    int GRID_SIZE;
+    int winner;
+
+	public static void main(String[] args) {
+		TTT ttt;
+		ttt = new TTT();
+		ttt.initialize();
+		ttt.startGame();
+	}
+
+	public int initialize() {
+        int i;
+        int a;
+        i = 0;
+        player = 1;
+        GRID_SIZE = 9;
+        grid = new int[GRID_SIZE];
+        while(i < GRID_SIZE) {
+            grid[i] = 0;
+            i = i + 1;
+        }
+        i = 0;
+        this.printState();
+
+
+        return 0;
+    }
+
+    public int startGame() {
+        int i;
+        int move;
+        i = 0;
+        winner = 0;
+        while(i < GRID_SIZE) {
+            move = this.readMove();
+            this.executeMove(move);
+            this.printState();
+            i = i + 1;
+            if (this.gameOver()) {
+                i = 9;
+            }
+        }
+        io.println(winner);
+        return 0;
+    }
+
+    public boolean gameOver() {
+        boolean ret;
+        int otherPlayer;
+        ret = false;
+        if(player < 2) {
+            otherPlayer = 2;
+        } else {
+            otherPlayer = 1;
+        }
+        if (this.cellContains(0, otherPlayer) && this.cellContains(1, otherPlayer) && this.cellContains(2, otherPlayer)) {
+            ret = true;
+        }
+        if (this.cellContains(3, otherPlayer) && this.cellContains(4, otherPlayer) && this.cellContains(5, otherPlayer)) {
+            ret = true;
+        }
+        if (this.cellContains(6, otherPlayer) && this.cellContains(7, otherPlayer) && this.cellContains(8, otherPlayer)) {
+            ret = true;
+        }
+        if (this.cellContains(0, otherPlayer) && this.cellContains(3, otherPlayer) && this.cellContains(6, otherPlayer)) {
+            ret = true;
+        }
+        if (this.cellContains(1, otherPlayer) && this.cellContains(4, otherPlayer) && this.cellContains(7, otherPlayer)) {
+            ret = true;
+        }
+        if (this.cellContains(2, otherPlayer) && this.cellContains(5, otherPlayer) && this.cellContains(8, otherPlayer)) {
+            ret = true;
+        }
+        if (this.cellContains(0, otherPlayer) && this.cellContains(4, otherPlayer) && this.cellContains(8, otherPlayer)) {
+            ret = true;
+        }
+        if (this.cellContains(2, otherPlayer) && this.cellContains(4, otherPlayer) && this.cellContains(6, otherPlayer)) {
+            ret = true;
+        }
+
+        if(ret) {
+            winner = otherPlayer;
+        }
+        return ret;
+    }
+
+    public int executeMove(int move) {
+        grid[move-1] = player;
+        if(player < 2) {
+            player = 2;
+        } else {
+            player = 1;
+        }
+        return 0;
+    }
+
+    public boolean isGridFull() {
+        int i;
+        boolean ret;
+        ret = true;
+        i = 0;
+        while(i < GRID_SIZE) {
+            if(this.cellContains(i, 0))
+                ret = false;
+            i = i + 1;
+        }
+        return ret;
+    }
+
+    public int printState() {
+        if(this.isGridFull()) {
+            io.println(1);
+        } else {
+            io.println(0);
+        }
+        this.printGrid();
+        return 0;
+    }
+
+    public int printGrid() {
+        io.print(grid[0]);
+        io.print(grid[1]);
+        io.println(grid[2]);
+        io.print(grid[3]);
+        io.print(grid[4]);
+        io.println(grid[5]);
+        io.print(grid[6]);
+        io.print(grid[7]);
+        io.println(grid[8]);
+
+        return 0;
+    }
+
+    public int readMove() {
+        int move;
+        int doWhile;
+        move = 1;
+        doWhile = 0;
+        while(doWhile < 1) {
+            move = io.read();
+            if(this.isMoveValid(move))
+                doWhile = 1;
+        }
+        return move;
+    }
+
+    public boolean isMoveValid(int move) {
+        boolean valid;
+        valid = false;
+        if(move < 10 && !(move < 1)) {
+            if(grid[move-1] < 1)
+                valid = true;
+        }
+        return valid;
+    }
+
+    public boolean test() {
+        return true;
+    }
+
+    public boolean cellContains(int i, int cell) {
+        return !(grid[i] < cell) && !(cell < grid[i]);
+    }
+
+
+}

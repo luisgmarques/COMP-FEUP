@@ -1,0 +1,31 @@
+import static BoardBase.sameArray(int[]) boolean;
+import static BoardBase.sameArray(int[]) boolean;
+import static BoardBase.printBoard(int[],int[],int[]) void;
+import static BoardBase.printWinner(int) void;
+
+import BoardBase();
+import BoardBase.playerTurn(int) int[];
+import static BoardBase.wrongMove() void;
+import static BoardBase.placeTaken() void;
+import BoardBase.place() void;
+
+class TicTacToe {
+
+  int[] row0;
+  int[] row1;
+  int[] row2;
+  int whoseturn;
+  int movesmade;
+  int[] pieces;
+
+  public int add(int a, int b) {
+    return a + b;
+  }
+
+  public static void main(String[] args) {
+    BoardBase b;
+    TicTacToe t;
+    t = new TicTacToe();
+    b.wrongMove(); // MUST FAIL
+  }
+}

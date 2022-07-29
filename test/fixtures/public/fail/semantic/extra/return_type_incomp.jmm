@@ -1,0 +1,15 @@
+class Opd {
+     int t;
+  
+    public static void main(String[] args) {
+      t = new Opd().sub1(1,2);
+    }
+  
+    public int sub1(int a, int b) {
+        return (a-b);
+      }
+  
+    public int add(int a, int b) {
+      return true; // MUST FAIL
+    }
+}

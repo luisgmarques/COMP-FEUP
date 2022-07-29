@@ -1,0 +1,6 @@
+class Object {
+    public static void main(String[] a) {
+        Object obj;
+        obj = new WrongType(); // MUST FAIL
+    }
+}

@@ -1,0 +1,8 @@
+class Type {
+
+  public NonExistType f(Type t, NonExistType n) {
+    return 0;
+  }
+
+}
+

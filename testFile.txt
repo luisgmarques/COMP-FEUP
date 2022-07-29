@@ -1,0 +1,12 @@
+import static io.println(int);
+
+class TestFile {
+    int field;
+
+	public static void main(String[] args) {
+        field = 0;
+        field = field + 1;
+        io.println(field);
+    }
+
+}

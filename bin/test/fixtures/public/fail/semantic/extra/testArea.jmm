@@ -1,0 +1,37 @@
+import static io.println(int);
+
+class TestArea {
+
+    public static void main(String[] args) {
+		int a;
+		int b;
+		TestArea simple;
+		int c;
+		a = 30;
+		b = 0-10;
+
+		simple = new TestArea();
+		c = simple.add(a,b);
+		io.println(c);
+    }
+
+    public boolean v(int a, int b) {
+        return true;
+    }
+
+    public int ret(int a) {
+        return 5;
+    }
+
+	public int add(int a, int b) {
+	    TestArea ta;
+	    boolean t;
+	    ta = new TestArea();
+	    t = true;
+        if(ta.v(a,b)) {
+            a = b;
+            b = a;
+        }
+		return a + this.ret(4);
+	}
+}

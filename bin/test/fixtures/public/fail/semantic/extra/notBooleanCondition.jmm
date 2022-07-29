@@ -1,0 +1,11 @@
+import static io.println(int);
+
+class NotBoolean {
+
+	public int add(int a, int b) {
+        if(a) {
+            a = b;
+        }
+		return a;
+	}
+}

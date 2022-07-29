@@ -1,0 +1,18 @@
+import static io.println(int);
+class Break {
+	public static void main(String[] args) {
+		int i;
+		i = 0;
+		//break;
+		while(true) {
+		    io.println(0);
+		    while(i < 9) {
+		        i = i + 1;
+		        if(!(i < 5) && !(5 < i)) // same as i == 5
+		            continue;
+		        io.println(i);
+		    }
+		    break;
+		}
+	}
+}

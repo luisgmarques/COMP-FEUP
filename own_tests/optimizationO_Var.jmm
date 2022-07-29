@@ -1,0 +1,25 @@
+import static io.println(int);
+class VarOptimization {
+
+	public static void main(String[] args) {
+        int b; // var 1                     var 1
+        int c; // var 2 <--- deleted        
+        int a; // var 3 <--- 2              var 2
+        int t; // var 4 <--- 3 <-- deleted  
+        
+        t = 54;
+        
+        c=2;
+        
+        a=1;
+
+        b=20 + t;
+
+
+        while (a<b) {
+          a = a * 2;
+          io.println(a);
+        }
+
+	}
+}

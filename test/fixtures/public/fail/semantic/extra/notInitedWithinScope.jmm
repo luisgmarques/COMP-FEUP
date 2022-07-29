@@ -1,0 +1,14 @@
+import static io.println(int) void;
+class NotInited {
+    public static void main(String[] args){
+        int a;
+        int b;
+        if(true) {
+            a = 5;
+            if(false) {
+                b = a;
+            }
+        }
+        b = a;
+    }
+}
